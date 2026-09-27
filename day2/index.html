@@ -13,7 +13,7 @@
 <body>
 <canvas id="fireworks-canvas" aria-hidden="true"></canvas>
 <div class="page">
-<section class="hero">
+<section id="home" class="hero">
 <div class="gold-line"></div>
 <p class="eyebrow">MARIAM & KEVIN</p>
 <h1>Day Two</h1>
@@ -37,13 +37,13 @@
 <p>Set against the beautiful backwaters of Kerala at sunset, join us for an evening filled with games, dancing, delicious food, and the joy of bringing our closest family and friends together.</p>
 </section>
 
-<section class="details-grid section">
+<section id="details" class="details-grid section">
 <article class="detail-card"><div class="icon">◷</div><h3>When</h3><p><strong>Monday, December 28, 2026</strong><br>4:30 PM onwards</p></article>
 <article class="detail-card"><div class="icon">⌖</div><h3>Where</h3><p><strong>Observatory by Chakolas Pavilion</strong><br>Kochi, Kerala</p><a href="https://maps.app.goo.gl/NNHJRNjVFftuNeiY8" target="_blank">View on Maps →</a></article>
 <article class="detail-card"><div class="icon">✦</div><h3>Dress Code</h3><p><strong>Indian attire</strong><br>Come dressed in your favorite Indian outfit.</p></article>
 </section>
 
-<section class="evening section">
+<section id="evening" class="evening section">
 <p class="eyebrow">THE EVENING</p>
 <h2>Good food. Good music. Good company.</h2>
 <div class="evening-items">
@@ -54,7 +54,7 @@
 </div>
 </section>
 
-<section class="note section">
+<section id="note" class="note section">
 <div class="note-card">
 <p class="script">A little something extra</p>
 <h2>Come celebrate with us.</h2>
@@ -206,6 +206,63 @@
         particles = [];
         canvas.style.display = 'none';
     }
+})();
+</script>
+
+
+<nav class="day2-nav" aria-label="Day Two navigation">
+    <a href="#home" class="day2-nav-btn active">
+        <span class="nav-icon">⌂</span>
+        <span>Home</span>
+    </a>
+    <a href="#details" class="day2-nav-btn">
+        <span class="nav-icon">✦</span>
+        <span>Details</span>
+    </a>
+    <a href="#evening" class="day2-nav-btn">
+        <span class="nav-icon">♪</span>
+        <span>Evening</span>
+    </a>
+    <a href="#note" class="day2-nav-btn">
+        <span class="nav-icon">♡</span>
+        <span>Note</span>
+    </a>
+</nav>
+
+
+<script>
+(() => {
+    const buttons = document.querySelectorAll('.day2-nav-btn');
+    const sections = [...buttons]
+        .map(btn => document.querySelector(btn.getAttribute('href')))
+        .filter(Boolean);
+
+    buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            buttons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        });
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+        const visible = entries
+            .filter(entry => entry.isIntersecting)
+            .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+        if (visible) {
+            buttons.forEach(btn => {
+                btn.classList.toggle(
+                    'active',
+                    btn.getAttribute('href') === '#' + visible.target.id
+                );
+            });
+        }
+    }, {
+        rootMargin: '-25% 0px -55% 0px',
+        threshold: [0.05, 0.2, 0.5]
+    });
+
+    sections.forEach(section => observer.observe(section));
 })();
 </script>
 
