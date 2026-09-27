@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mariam & Kevin | Day Two</title>
+<meta name="description" content="An intimate celebration for Mariam & Kevin — December 28, 2026.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400&family=Inter:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="fireworks-canvas" aria-hidden="true"></canvas>
+<div class="page">
+<section class="hero">
+<div class="gold-line"></div>
+<p class="eyebrow">MARIAM & KEVIN</p>
+<h1>Day Two</h1>
+<p class="script">An Intimate Celebration</p>
+<div class="ornament">✦</div>
+<div class="hero-card">
+<p class="date">MONDAY &nbsp;|&nbsp; 28TH &nbsp;|&nbsp; DECEMBER 2026</p>
+<p class="time">4:30 PM</p>
+<div class="thin-rule"></div>
+<p class="label">VENUE</p>
+<p class="venue">Observatory by Chakolas Pavilion</p>
+<p class="location">Kochi, Kerala</p>
+</div>
+<a class="scroll-hint" href="#details">Discover the evening ↓</a>
+</section>
+
+<section id="details" class="intro section">
+<div class="section-mark">02</div>
+<h2>Let the celebrations continue.</h2>
+<div class="divider"><span></span> ✦ <span></span></div>
+<p>Set against the beautiful backwaters of Kerala at sunset, join us for an evening filled with games, dancing, delicious food, and the joy of bringing our closest family and friends together.</p>
+</section>
+
+<section class="details-grid section">
+<article class="detail-card"><div class="icon">◷</div><h3>When</h3><p><strong>Monday, December 28, 2026</strong><br>4:30 PM onwards</p></article>
+<article class="detail-card"><div class="icon">⌖</div><h3>Where</h3><p><strong>Observatory by Chakolas Pavilion</strong><br>Kochi, Kerala</p><a href="https://maps.app.goo.gl/NNHJRNjVFftuNeiY8" target="_blank">View on Maps →</a></article>
+<article class="detail-card"><div class="icon">✦</div><h3>Dress Code</h3><p><strong>Indian attire</strong><br>Come dressed in your favorite Indian outfit.</p></article>
+</section>
+
+<section class="evening section">
+<p class="eyebrow">THE EVENING</p>
+<h2>Good food. Good music. Good company.</h2>
+<div class="evening-items">
+<div><span>01</span><strong>Sunset</strong><p>Gather with us as the sun sets over the Kerala backwaters.</p></div>
+<div><span>02</span><strong>Games</strong><p>A little friendly competition and plenty of laughs.</p></div>
+<div><span>03</span><strong>Dancing</strong><p>Come ready to celebrate and dance with us.</p></div>
+<div><span>04</span><strong>Dinner</strong><p>An evening of delicious food shared with family and friends.</p></div>
+</div>
+</section>
+
+<section class="note section">
+<div class="note-card">
+<p class="script">A little something extra</p>
+<h2>Come celebrate with us.</h2>
+<p>This evening is intentionally smaller and more intimate — a chance for our closest family and friends to spend a little more time together after the wedding.</p>
+<p class="signature">Mariam & Kevin</p>
+</div>
+</section>
+
+<footer><p>MARIAM & KEVIN</p><span>28 · 12 · 2026</span></footer>
+</div>
+
+<script>
+(() => {
+    const canvas = document.getElementById('fireworks-canvas');
+    const ctx = canvas.getContext('2d');
+    let w, h, dpr;
+    let fireworks = [];
+    let particles = [];
+    let lastLaunch = 0;
+
+    const resize = () => {
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        w = window.innerWidth;
+        h = window.innerHeight;
+        canvas.width = w * dpr;
+        canvas.height = h * dpr;
+        canvas.style.width = w + 'px';
+        canvas.style.height = h + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+
+    class Firework {
+        constructor() {
+            this.x = Math.random() * w;
+            this.y = h + 8;
+            this.targetX = w * (0.12 + Math.random() * 0.76);
+            this.targetY = h * (0.10 + Math.random() * 0.45);
+            this.speed = 6 + Math.random() * 2;
+            this.angle = Math.atan2(this.targetY - this.y, this.targetX - this.x);
+            this.vx = Math.cos(this.angle) * this.speed;
+            this.vy = Math.sin(this.angle) * this.speed;
+            this.trail = [];
+            this.color = Math.random() > 0.35
+                ? `hsl(${40 + Math.random() * 12}, 90%, ${65 + Math.random() * 15}%)`
+                : `hsl(${330 + Math.random() * 18}, 75%, ${62 + Math.random() * 15}%)`;
+        }
+        update() {
+            this.trail.push([this.x, this.y]);
+            if (this.trail.length > 8) this.trail.shift();
+            this.x += this.vx;
+            this.y += this.vy;
+            return Math.hypot(this.targetX - this.x, this.targetY - this.y) < 22;
+        }
+        draw() {
+            ctx.beginPath();
+            ctx.moveTo(this.x, this.y);
+            for (let i = this.trail.length - 1; i >= 0; i--) {
+                ctx.lineTo(this.trail[i][0], this.trail[i][1]);
+            }
+            ctx.strokeStyle = this.color;
+            ctx.globalAlpha = 0.6;
+            ctx.lineWidth = 1.2;
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffe7a2';
+            ctx.fill();
+        }
+        explode() {
+            const count = 55 + Math.floor(Math.random() * 35);
+            for (let i = 0; i < count; i++) {
+                const angle = (Math.PI * 2 * i / count) + (Math.random() - .5) * .08;
+                const speed = 1.2 + Math.random() * 3.7;
+                particles.push(new Particle(this.x, this.y, angle, speed, this.color));
+            }
+        }
+    }
+
+    class Particle {
+        constructor(x, y, angle, speed, color) {
+            this.x = x; this.y = y;
+            this.vx = Math.cos(angle) * speed;
+            this.vy = Math.sin(angle) * speed;
+            this.life = 1;
+            this.decay = 0.012 + Math.random() * 0.018;
+            this.gravity = 0.045;
+            this.color = color;
+            this.size = 1 + Math.random() * 1.5;
+        }
+        update() {
+            this.vx *= .985;
+            this.vy = this.vy * .985 + this.gravity;
+            this.x += this.vx;
+            this.y += this.vy;
+            this.life -= this.decay;
+        }
+        draw() {
+            ctx.globalAlpha = Math.max(0, this.life);
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+            ctx.globalAlpha = 1;
+        }
+    }
+
+    function launch() {
+        fireworks.push(new Firework());
+    }
+
+    function animate(t) {
+        ctx.fillStyle = 'rgba(23, 5, 12, 0.18)';
+        ctx.fillRect(0, 0, w, h);
+
+        if (t - lastLaunch > 650 + Math.random() * 700) {
+            launch();
+            if (Math.random() > .72) setTimeout(launch, 170);
+            lastLaunch = t;
+        }
+
+        for (let i = fireworks.length - 1; i >= 0; i--) {
+            const f = fireworks[i];
+            if (f.update()) {
+                f.explode();
+                fireworks.splice(i, 1);
+            } else {
+                f.draw();
+            }
+        }
+
+        for (let i = particles.length - 1; i >= 0; i--) {
+            const p = particles[i];
+            p.update();
+            p.draw();
+            if (p.life <= 0) particles.splice(i, 1);
+        }
+
+        requestAnimationFrame(animate);
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+    requestAnimationFrame(animate);
+
+    // Respect reduced-motion preferences.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        fireworks = [];
+        particles = [];
+        canvas.style.display = 'none';
+    }
+})();
+</script>
+
+</body>
+</html>
